@@ -6,7 +6,6 @@ import math
 from Module.dueling_dqn import DuelingDQN
 from model.replay_memory import ReplayMemory, Transition
 import torch.nn as nn
-from schedule_kpi import ScheduleKPI
 
 
 class PathAgent:

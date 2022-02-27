@@ -17,19 +17,18 @@ print('GPU State:', device)
 # Environment setting
 preprocessor = Preprocessor()
 preprocessor.process()
-path_env = PathEnv(preprocessor.jobs_info, preprocessor.setup_time, preprocessor.equipments_list,
-                   preprocessor.actions, preprocessor.max_step, preprocessor.avg_op_order)
-test_env = PathEnv(preprocessor.jobs_info, preprocessor.setup_time, preprocessor.equipments_list,
-                   preprocessor.actions, preprocessor.max_step, preprocessor.avg_op_order)
+path_env = PathEnv(preprocessor.orders, preprocessor.motors, preprocessor.actions, preprocessor.time_matrix,
+                   preprocessor.distance_matrix)
+test_env = PathEnv(preprocessor.orders, preprocessor.motors, preprocessor.actions, preprocessor.time_matrix,
+                   preprocessor.distance_matrix)
 path_env.reset()
 attribute_count = preprocessor.jobs_info.observation[0].get_one_observation().size
-
 
 policy_net = DQN(len(preprocessor.job_info_list), attribute_count, len(path_env.ac), device).to(device)
 
 optimizer = optim.RMSprop(policy_net.parameters(), lr=config.LEARNING_RATE)
 schedule_agent = PathAgent(policy_net, device, len(preprocessor.job_info_list), attribute_count,
-                               len(path_env.ac), optimizer)
+                           len(path_env.ac), optimizer)
 
 returns = []
 best_return = config.BEST_RETURN
