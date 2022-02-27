@@ -5,33 +5,19 @@ import numpy as np
 from tf_agents.environments import py_environment
 from tf_agents.specs import array_spec
 from tf_agents.trajectories import time_step as ts
-from itertools import product
-from ScheduleReward import ScheduleReward
+from schedule_reward import ScheduleReward
+
 
 class ScheduleEnv(py_environment.PyEnvironment):
-    # network output shape = (_observation_spec.shape[0],action count)
-    def __init__(self):
-        self.jobs = ['J0', 'J1', 'J2', 'J3']
-        self.jobs_run_time = {'J0': 10, 'J1': 5, 'J2': 20, 'J3': 100}
-        # job_info : [is_done,start_time,end_time,run_time,can_run_eqp1,can_run_eqp2,runing_eqp1,runing_eqp2]
-        self.job_info = Jobs(self.jobs_run_time)
-        self.obervation_spec = self.job_info.get_observation_spec()
-        self.equipments = ['E0', 'E1']
-        self.deadline = 100
-        # action, array for jobs*equipments
-        self.ac = np.array(list(product(self.jobs, self.equipments)))
-        self.schedule_reward = ScheduleReward(self.jobs_run_time, self.equipments, self.ac, self.deadline)
-        self.eqps_count = len(self.equipments)
-        self.jobs_count = len(self.jobs)
-        max_run_time = max(self.jobs_run_time.values())
-        max_time = max_run_time * self.jobs_count
+    def __init__(self,orders,motors,actions,time_matrix,distance_matrix):
+
+        # self.schedule_reward = ScheduleReward(self.jobs_run_time, self.equipments, self.ac, self.deadline)
 
         self._action_spec = array_spec.BoundedArraySpec(
             shape=(), dtype=np.int32, minimum=0, maximum=len(self.ac) - 1, name='action')
 
         self._observation_spec = array_spec.BoundedArraySpec(
-            shape=self.obervation_spec, dtype=np.float32, minimum=[0, 0, 0, 0, 0, 0, 0, 0],
-            maximum=[1, max_time, max_time, max_run_time, 1, 1, 1, 1],
+            shape=self.obervation_spec, dtype=np.float32,
             name='observation')
         # self._state = np.full((self.eqps_count, self.jobs_count), -1)
         self._state = self.job_info.get_observation()
