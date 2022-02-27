@@ -1,15 +1,12 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-import numpy as np
-from tf_agents.environments import py_environment
-from tf_agents.specs import array_spec
-from tf_agents.trajectories import time_step as ts
-from path_reward import PathReward
+from model.order import AllOrders
+import torch
 
 
 class PathEnv:
-    def __init__(self, orders, motors, actions, time_matrix, distance_matrix):
+    def __init__(self, orders: AllOrders, motors, actions, time_matrix, distance_matrix):
         self.orders = orders
         self.motor = motors
         self.actions = actions
@@ -18,11 +15,16 @@ class PathEnv:
         self._episode_ended = False
         self.max_step = 20
         self.step_count = 0
+        self._state = None
 
     def reset(self):
-        pass
+        self.orders.reset()
+        self._state = self.orders.get_observations()
+        self._episode_ended = False
+        self.step_count = 0
+        return torch.tensor(self._state)
 
-    def update_state(self, eqp_id, job_name):
+    def update_state(self, motor_id, order_id):
         pass
 
     def step(self, action):

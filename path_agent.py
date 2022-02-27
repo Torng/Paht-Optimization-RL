@@ -1,9 +1,7 @@
 import config
-from model_logger import gantt_result, clear_result
 import torch
 import random
 import math
-from Module.dueling_dqn import DuelingDQN
 from model.replay_memory import ReplayMemory, Transition
 import torch.nn as nn
 

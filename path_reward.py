@@ -1,9 +1,8 @@
 import numpy as np
 from typing import Dict, List
-from Interface.RewardInterface import Reward
 
 
-class PathReward(Reward):
+class PathReward:
     def __init__(self, jobs_info: Dict[str, float], equipments_info: List[str], actions, deadline):
         self.jobs = list(jobs_info.keys())
         self.jobs_run_time = jobs_info  # 先這樣
