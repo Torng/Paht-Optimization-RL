@@ -28,4 +28,8 @@ class PathEnv:
         pass
 
     def step(self, action):
-        pass
+
+        motor_id = self.actions[action][0]
+        order_id = self.actions[action][1]
+
+        if self.orders

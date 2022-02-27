@@ -4,17 +4,17 @@ import random
 import math
 from model.replay_memory import ReplayMemory, Transition
 import torch.nn as nn
-
+from Module.dqn import DQN
 
 class PathAgent:
-    def __init__(self, policy_net, device, job_count, attribute_count, action_count, optimizer):
+    def __init__(self, policy_net, device, order_count, attribute_count, action_count, optimizer):
         self.device = device
         self.policy_net = policy_net
-        self.target_net = DuelingDQN(job_count, attribute_count, action_count, device).to(device)
+        self.target_net = DQN(order_count, attribute_count, action_count, device).to(device)
         self.target_net.load_state_dict(policy_net.state_dict())
         self.target_net.eval()
         self.memory = ReplayMemory(config.REPLAY_BUFFER_CAPACITY)
-        self.job_count = job_count
+        self.job_count = order_count
         self.attribute_count = attribute_count
         self.action_count = action_count
         self.optimizer = optimizer
@@ -34,12 +34,12 @@ class PathAgent:
             if display_status:
                 while not done:
                     print("step {}:".format(step))
-                    print(gantt_result(env.job_info, equipment_list))
+                    print(state)
                     # print(clear_result(state, job_count))
                     action = self.select_action(state)
                     state, reward, done = env.step(action.item())
                     if done:
-                        clear_result(state, job_count, len(equipment_list))
+                        print(state)
                     step += 1
             else:
                 while not done:
